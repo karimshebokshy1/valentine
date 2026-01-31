@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Fofy ❤️</title>
+
+  <!-- Song (plays after YES click) -->
+  <audio id="song" loop>
+    <source src="https://dl.sndup.net/xyyq/Ela%20Wana%20Ma3ak.mp3" type="audio/mpeg">
+  </audio>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.15);
+      padding: 34px 26px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      width: min(520px, 90vw);
+      box-sizing: border-box;
+    }
+
+    h1 { font-size: 34px; margin: 0 0 8px; }
+    p  { font-size: 18px; margin: 10px 0 18px; }
+
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 18px 0 24px;
+    }
+
+    .box {
+      background: rgba(255,255,255,0.18);
+      border-radius: 14px;
+      padding: 12px 8px;
+    }
+
+    .num { font-size: 26px; font-weight: bold; }
+    .lbl { font-size: 12px; opacity: 0.9; letter-spacing: 0.5px; }
+
+    .btn-row {
+      position: relative;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 14px 26px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .yes { background: #e60026; color: white; }
+    .no  { background: white; color: #e60026; }
+
+    /* The NO button becomes "absolute" so it can run away */
+    #noBtn {
+      position: absolute;
+      left: 50%;
+      transform: translateX(120px); /* starts a bit to the right of YES */
+      top: 18px;
+    }
+
+    #yesBtn {
+      position: relative; /* stays in normal flow */
+    }
+
+    .small {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card" id="content">
+    <h1>Fofy 💖</h1>
+    <p>Will you be my Valentine?</p>
+
+    <div class="countdown" aria-label="Countdown to Valentine’s Day">
+      <div class="box"><div class="num" id="d">--</div><div class="lbl">DAYS</div></div>
+      <div class="box"><div class="num" id="h">--</div><div class="lbl">HOURS</div></div>
+      <div class="box"><div class="num" id="m">--</div><div class="lbl">MIN</div></div>
+      <div class="box"><div class="num" id="s">--</div><div class="lbl">SEC</div></div>
+    </div>
+
+    <div class="btn-row" id="arena">
+      <button class="yes" id="yesBtn" onclick="yes()">YES ❤️</button>
+      <button class="no"  id="noBtn">NO 🙃</button>
+    </div>
+
+    <div class="small">Tip: try clicking “No” 😌</div>
+  </div>
+
+<script>
+  // ---------- Countdown (next Feb 14) ----------
+  function getNextValentineDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+
+    // Feb is month 1 (0-based)
+    let target = new Date(year, 1, 14, 0, 0, 0);
+
+    // If already passed this year, use next year
+    if (now > target) target = new Date(year + 1, 1, 14, 0, 0, 0);
+    return target;
+  }
+
+  const targetDate = getNextValentineDate();
+
+  function pad(n) { return String(n).padStart(2, "0"); }
+
+  function updateCountdown() {
+    const now = new Date();
+    let diff = targetDate - now;
+
+    if (diff < 0) diff = 0;
+
+    const sec = Math.floor(diff / 1000);
+    const days = Math.floor(sec / (3600 * 24));
+    const hours = Math.floor((sec % (3600 * 24)) / 3600);
+    const mins = Math.floor((sec % 3600) / 60);
+    const secs = sec % 60;
+
+    document.getElementById("d").textContent = days;
+    document.getElementById("h").textContent = pad(hours);
+    document.getElementById("m").textContent = pad(mins);
+    document.getElementById("s").textContent = pad(secs);
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ---------- NO button runs away ----------
+  const noBtn = document.getElementById("noBtn");
+  const arena = document.getElementById("arena");
+
+  function moveNoButton() {
+    const arenaRect = arena.getBoundingClientRect();
+    const btnRect = noBtn.getBoundingClientRect();
+
+    // available area inside arena
+    const maxX = arenaRect.width - btnRect.width;
+    const maxY = arenaRect.height - btnRect.height;
+
+    // random new position (keep it inside arena)
+    const x = Math.random() * Math.max(0, maxX);
+    const y = Math.random() * Math.max(0, maxY);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+    noBtn.style.transform = "translateX(0)";
+  }
+
+  // Desktop hover = run away
+  noBtn.addEventListener("mouseenter", moveNoButton);
+
+  // Mobile touch = run away (so she can't tap it)
+  noBtn.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    moveNoButton();
+  }, { passive: false });
+
+  // Also run away if she somehow tries to click it
+  noBtn.addEventListener("click", moveNoButton);
+
+  // Start with a random position so it looks alive
+  window.addEventListener("load", () => setTimeout(moveNoButton, 300));
+
+  // ---------- YES action ----------
+  function yes() {
+    document.getElementById("song").play();
+
+    document.getElementById("content").innerHTML = `
+      <h1>❤️❤️❤️</h1>
+      <p>
+        I love you one person.<br/>
+        Not for Valentine’s only…<br/>
+        but every single day 🌹
+      </p>
+      <p>You’re my safe place, my choice, my heart.</p>
+      <button class="yes" onclick="window.location.href='https://wa.me/201110001444'">
+        Message me 💬
+      </button>
+      <div class="small" style="margin-top:14px; opacity:0.95;">
+        (Song is playing 🎶 “إلا وأنا معاك”)
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
