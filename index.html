@@ -245,8 +245,8 @@
 
         <div class="result">
           <div class="photo" id="photoBox">
-            <!-- photo10.jpg must exist in repo -->
-            <img id="photoImg" src="photo10.jpg" alt="Us" />
+            <!-- photo10.JPG must exist in repo -->
+            <img id="photoImg" src="photo10.JPG" alt="Us" />
           </div>
 
           <div class="caption" id="captionBox">
@@ -270,7 +270,7 @@
 <script>
   // ========= SETTINGS =========
   const WHATSAPP_NUMBER = "201011999501"; // 01011999501 in international format (Egypt)
-  const ANGhAMI_LINK = "https://play.anghami.com/song/1208419042?lang=ar"; // opens on Anghami  [oai_citation:1‡Anghami](https://play.anghami.com/song/1208419042?lang=ar&utm_source=chatgpt.com)
+  const ANGhAMI_LINK = "https://play.anghami.com/song/1018539461"; // Ela Wana Ma3ak - Naseem Alamin
 
   // ========= COUNTDOWN =========
   function getNextValentineDate(){
@@ -358,9 +358,9 @@
   const captionBox  = document.getElementById("captionBox");
   const photoImg    = document.getElementById("photoImg");
 
-  // Captions (pharmacist + sushi + romantic)
+  // Captions (10% removed the arabic bracket part)
   const captions = {
-    10:  `10%: <b>love you one person.</b> (بس لسه جرعة البداية 😌)`,
+    10:  `10%: <b>love you one person.</b>`,
     20:  `20%: Pharmacist queen 💊… you already cured my bad days.`,
     30:  `30%: If love was a prescription, you’d be “take forever, once daily.”`,
     40:  `40%: I’m not asking for perfect… I’m asking for <b>you</b>.`,
@@ -372,11 +372,12 @@
     100: `100%: <b>Deal.</b> Valentine confirmed ✅<br/>Now press “Message me” and let’s pick the sushi place 🍣❤️`
   };
 
-  // You asked: photo for 10%. We’ll show photo10.jpg for all by default.
-  // Later, if you upload more photos (photo20.jpg, photo30.jpg...), this code will auto use them.
+  // Photos rule:
+  // - 10,30,40,50,60,70,80,90,100 => photoXX.JPG
+  // - 20 => photo20.jpg (lowercase only)
   function photoFor(p){
-    // if you upload photos named photo20.jpg etc, it will try them
-    return `photo${p}.jpg`;
+    if (p === 20) return "photo20.jpg";
+    return `photo${p}.JPG`;
   }
 
   function setSelected(btn){
@@ -388,9 +389,9 @@
     setSelected(btn);
     captionBox.innerHTML = captions[p] || `Chosen: ${p}% ❤️`;
 
-    // Try to load photo{p}.jpg; if not found, fallback to photo10.jpg
+    // Try to load exact file; if not found, fallback to photo10.JPG
     const trySrc = photoFor(p);
-    const fallback = "photo10.jpg";
+    const fallback = "photo10.JPG";
     const img = new Image();
     img.onload = ()=> { photoImg.src = trySrc; };
     img.onerror = ()=> { photoImg.src = fallback; };
