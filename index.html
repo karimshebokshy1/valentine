@@ -5,211 +5,418 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>For Fofy ❤️</title>
 
-  <!-- Song (plays after YES click) -->
-  <audio id="song" loop>
-    <source src="https://dl.sndup.net/xyyq/Ela%20Wana%20Ma3ak.mp3" type="audio/mpeg">
-  </audio>
-
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    :root{
+      --bg1:#ff5a7a;
+      --bg2:#ff9ab3;
+      --card: rgba(255,255,255,.16);
+      --glass: blur(10px);
+      --white: #fff;
+      --red: #e60026;
+      --text: rgba(255,255,255,.95);
+      --muted: rgba(255,255,255,.8);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
       font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
-      overflow: hidden;
+      color: var(--text);
+      overflow:hidden;
     }
 
-    .card {
-      background: rgba(255,255,255,0.15);
-      padding: 34px 26px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      width: min(520px, 90vw);
-      box-sizing: border-box;
+    .wrap{
+      width:min(640px, 92vw);
+      padding: 18px;
     }
 
-    h1 { font-size: 34px; margin: 0 0 8px; }
-    p  { font-size: 18px; margin: 10px 0 18px; }
+    .card{
+      background: var(--card);
+      backdrop-filter: var(--glass);
+      border-radius: 22px;
+      padding: 26px 20px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.18);
+      position:relative;
+    }
 
-    .countdown {
-      display: grid;
+    .title{
+      margin:0 0 6px;
+      font-size: 34px;
+      letter-spacing:.2px;
+    }
+    .subtitle{
+      margin:0 0 14px;
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Countdown */
+    .countdown{
+      display:grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 18px 0 24px;
+      gap:10px;
+      margin: 14px 0 18px;
     }
-
-    .box {
-      background: rgba(255,255,255,0.18);
+    .cd-box{
+      background: rgba(255,255,255,.16);
       border-radius: 14px;
-      padding: 12px 8px;
+      padding: 10px 8px;
+      text-align:center;
     }
+    .cd-num{font-size: 26px; font-weight: 800;}
+    .cd-lbl{font-size: 11px; letter-spacing: .8px; opacity:.9}
 
-    .num { font-size: 26px; font-weight: bold; }
-    .lbl { font-size: 12px; opacity: 0.9; letter-spacing: 0.5px; }
-
-    .btn-row {
-      position: relative;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
+    /* Buttons row */
+    .arena{
+      position:relative;
+      height: 92px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
-
-    button {
+    button{
+      border:none;
+      border-radius: 14px;
       padding: 14px 26px;
       font-size: 18px;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      user-select: none;
+      cursor:pointer;
+      user-select:none;
       -webkit-tap-highlight-color: transparent;
+      transition: transform .08s ease;
     }
+    button:active{transform: scale(.98)}
+    .yes{background: var(--red); color: var(--white); font-weight:700;}
+    .no{background: var(--white); color: var(--red); font-weight:700;}
 
-    .yes { background: #e60026; color: white; }
-    .no  { background: white; color: #e60026; }
-
-    /* The NO button becomes "absolute" so it can run away */
-    #noBtn {
-      position: absolute;
-      left: 50%;
-      transform: translateX(120px); /* starts a bit to the right of YES */
+    #noBtn{
+      position:absolute;
+      left: 58%;
       top: 18px;
     }
 
-    #yesBtn {
-      position: relative; /* stays in normal flow */
+    .tip{
+      margin-top:10px;
+      font-size: 13px;
+      opacity:.9;
     }
 
-    .small {
-      font-size: 13px;
-      opacity: 0.9;
+    /* Page switch */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* Second page: percent selector */
+    .progressWrap{
+      margin-top: 14px;
+      display:grid;
+      gap: 12px;
+    }
+
+    .percentGrid{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:10px;
+    }
+
+    .pctBtn{
+      background: rgba(255,255,255,.16);
+      color: var(--white);
+      font-weight:800;
+      padding: 12px 0;
+      border-radius: 14px;
+      font-size: 16px;
+    }
+    .pctBtn:hover{filter: brightness(1.05)}
+    .pctBtn.selected{
+      outline: 2px solid rgba(255,255,255,.85);
+      background: rgba(230,0,38,.35);
+    }
+
+    .result{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
       margin-top: 8px;
+    }
+
+    .photo{
+      width:100%;
+      border-radius: 18px;
+      overflow:hidden;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+    }
+    .photo img{
+      width:100%;
+      display:block;
+      object-fit: cover;
+      max-height: 360px;
+    }
+
+    .caption{
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: 14px 14px;
+      line-height: 1.55;
+      font-size: 16px;
+    }
+    .caption b{color:#fff}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 6px;
+      justify-content:center;
+    }
+    .ghost{
+      background: rgba(255,255,255,.16);
+      color: #fff;
+      font-weight:700;
+    }
+
+    /* Floating hearts */
+    .heart{
+      position:absolute;
+      bottom:-20px;
+      font-size: 18px;
+      opacity:.85;
+      animation: floatUp 4.2s linear forwards;
+      pointer-events:none;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.18));
+    }
+    @keyframes floatUp{
+      0%{ transform: translateY(0) translateX(0) scale(.9); opacity:.0;}
+      10%{opacity:.85}
+      100%{ transform: translateY(-120vh) translateX(40px) scale(1.2); opacity:0;}
+    }
+
+    /* Mobile grid tweak */
+    @media (max-width: 420px){
+      .percentGrid{grid-template-columns: repeat(4, 1fr);}
+      .title{font-size: 30px;}
+      .cd-num{font-size: 22px;}
     }
   </style>
 </head>
 
 <body>
-  <div class="card" id="content">
-    <h1>Fofy 💖</h1>
-    <p>Will you be my Valentine?</p>
+  <div class="wrap">
 
-    <div class="countdown" aria-label="Countdown to Valentine’s Day">
-      <div class="box"><div class="num" id="d">--</div><div class="lbl">DAYS</div></div>
-      <div class="box"><div class="num" id="h">--</div><div class="lbl">HOURS</div></div>
-      <div class="box"><div class="num" id="m">--</div><div class="lbl">MIN</div></div>
-      <div class="box"><div class="num" id="s">--</div><div class="lbl">SEC</div></div>
+    <!-- PAGE 1 -->
+    <div class="card page active" id="page1">
+      <h1 class="title">Fofy 💖</h1>
+      <p class="subtitle">
+        Will you be my Valentine?<br/>
+        (And yes… there is a surprise after “YES” 😌)
+      </p>
+
+      <div class="countdown" aria-label="Countdown to Valentine’s Day">
+        <div class="cd-box"><div class="cd-num" id="d">--</div><div class="cd-lbl">DAYS</div></div>
+        <div class="cd-box"><div class="cd-num" id="h">--</div><div class="cd-lbl">HOURS</div></div>
+        <div class="cd-box"><div class="cd-num" id="m">--</div><div class="cd-lbl">MIN</div></div>
+        <div class="cd-box"><div class="cd-num" id="s">--</div><div class="cd-lbl">SEC</div></div>
+      </div>
+
+      <div class="arena" id="arena">
+        <button class="yes" id="yesBtn">YES ❤️</button>
+        <button class="no" id="noBtn">NO 🙃</button>
+      </div>
+
+      <div class="tip">Try pressing “NO” 😌</div>
     </div>
 
-    <div class="btn-row" id="arena">
-      <button class="yes" id="yesBtn" onclick="yes()">YES ❤️</button>
-      <button class="no"  id="noBtn">NO 🙃</button>
+    <!-- PAGE 2 -->
+    <div class="card page" id="page2">
+      <h1 class="title">Okay… one more thing 😌</h1>
+      <p class="subtitle">
+        Before we lock it in…<br/>
+        Choose <b>how much</b> you accept being my Valentine ❤️
+      </p>
+
+      <div class="progressWrap">
+        <div class="percentGrid" id="percentGrid"></div>
+
+        <div class="result">
+          <div class="photo" id="photoBox">
+            <!-- photo10.jpg must exist in repo -->
+            <img id="photoImg" src="photo10.jpg" alt="Us" />
+          </div>
+
+          <div class="caption" id="captionBox">
+            Pick a percentage to see the message 💌
+          </div>
+
+          <div class="actions">
+            <button class="ghost" id="openAnghamiBtn">Play our song 🎶 (Anghami)</button>
+            <button class="yes" id="whatsBtn">Message me 💬</button>
+          </div>
+
+          <div class="tip" style="text-align:center;">
+            Successful pharmacist + sushi date = confirmed plan 🍣💊
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="small">Tip: try clicking “No” 😌</div>
   </div>
 
 <script>
-  // ---------- Countdown (next Feb 14) ----------
-  function getNextValentineDate() {
+  // ========= SETTINGS =========
+  const WHATSAPP_NUMBER = "201011999501"; // 01011999501 in international format (Egypt)
+  const ANGhAMI_LINK = "https://play.anghami.com/song/1208419042?lang=ar"; // opens on Anghami  [oai_citation:1‡Anghami](https://play.anghami.com/song/1208419042?lang=ar&utm_source=chatgpt.com)
+
+  // ========= COUNTDOWN =========
+  function getNextValentineDate(){
     const now = new Date();
-    const year = now.getFullYear();
-
-    // Feb is month 1 (0-based)
-    let target = new Date(year, 1, 14, 0, 0, 0);
-
-    // If already passed this year, use next year
+    let year = now.getFullYear();
+    let target = new Date(year, 1, 14, 0, 0, 0); // Feb = 1
     if (now > target) target = new Date(year + 1, 1, 14, 0, 0, 0);
     return target;
   }
-
   const targetDate = getNextValentineDate();
+  const pad = n => String(n).padStart(2,"0");
 
-  function pad(n) { return String(n).padStart(2, "0"); }
-
-  function updateCountdown() {
+  function updateCountdown(){
     const now = new Date();
     let diff = targetDate - now;
-
     if (diff < 0) diff = 0;
-
-    const sec = Math.floor(diff / 1000);
-    const days = Math.floor(sec / (3600 * 24));
-    const hours = Math.floor((sec % (3600 * 24)) / 3600);
-    const mins = Math.floor((sec % 3600) / 60);
-    const secs = sec % 60;
+    const sec = Math.floor(diff/1000);
+    const days = Math.floor(sec/(3600*24));
+    const hours = Math.floor((sec%(3600*24))/3600);
+    const mins = Math.floor((sec%3600)/60);
+    const secs = sec%60;
 
     document.getElementById("d").textContent = days;
     document.getElementById("h").textContent = pad(hours);
     document.getElementById("m").textContent = pad(mins);
     document.getElementById("s").textContent = pad(secs);
   }
-
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  // ---------- NO button runs away ----------
+  // ========= RUNAWAY NO BUTTON =========
   const noBtn = document.getElementById("noBtn");
   const arena = document.getElementById("arena");
 
-  function moveNoButton() {
-    const arenaRect = arena.getBoundingClientRect();
-    const btnRect = noBtn.getBoundingClientRect();
-
-    // available area inside arena
-    const maxX = arenaRect.width - btnRect.width;
-    const maxY = arenaRect.height - btnRect.height;
-
-    // random new position (keep it inside arena)
-    const x = Math.random() * Math.max(0, maxX);
-    const y = Math.random() * Math.max(0, maxY);
-
+  function moveNoButton(){
+    const a = arena.getBoundingClientRect();
+    const b = noBtn.getBoundingClientRect();
+    const maxX = Math.max(0, a.width - b.width);
+    const maxY = Math.max(0, a.height - b.height);
+    const x = Math.random()*maxX;
+    const y = Math.random()*maxY;
     noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-    noBtn.style.transform = "translateX(0)";
+    noBtn.style.top  = y + "px";
   }
 
-  // Desktop hover = run away
   noBtn.addEventListener("mouseenter", moveNoButton);
-
-  // Mobile touch = run away (so she can't tap it)
-  noBtn.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    moveNoButton();
-  }, { passive: false });
-
-  // Also run away if she somehow tries to click it
   noBtn.addEventListener("click", moveNoButton);
+  noBtn.addEventListener("touchstart", (e)=>{ e.preventDefault(); moveNoButton(); }, {passive:false});
+  window.addEventListener("load", ()=> setTimeout(moveNoButton, 250));
 
-  // Start with a random position so it looks alive
-  window.addEventListener("load", () => setTimeout(moveNoButton, 300));
-
-  // ---------- YES action ----------
-  function yes() {
-    document.getElementById("song").play();
-
-    document.getElementById("content").innerHTML = `
-      <h1>❤️❤️❤️</h1>
-      <p>
-        I love you one person.<br/>
-        Not for Valentine’s only…<br/>
-        but every single day 🌹
-      </p>
-      <p>You’re my safe place, my choice, my heart.</p>
-      <button class="yes" onclick="window.location.href='https://wa.me/201011999501'">
-        Message me 💬
-      </button>
-      <div class="small" style="margin-top:14px; opacity:0.95;">
-        (Song is playing 🎶 “إلا وأنا معاك”)
-      </div>
-    `;
+  // ========= HEARTS =========
+  function spawnHeart(){
+    const h = document.createElement("div");
+    h.className = "heart";
+    const hearts = ["❤️","💖","💘","💕","🍣","💊"];
+    h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+    h.style.left = Math.floor(Math.random()*100) + "vw";
+    h.style.fontSize = (16 + Math.random()*16) + "px";
+    h.style.animationDuration = (3.2 + Math.random()*2.2) + "s";
+    document.body.appendChild(h);
+    setTimeout(()=> h.remove(), 5200);
   }
+
+  // ========= PAGE SWITCH =========
+  const page1 = document.getElementById("page1");
+  const page2 = document.getElementById("page2");
+  const yesBtn = document.getElementById("yesBtn");
+
+  function goToPage2(){
+    page1.classList.remove("active");
+    page2.classList.add("active");
+    // start hearts
+    spawnHeart();
+    setInterval(spawnHeart, 650);
+  }
+
+  yesBtn.addEventListener("click", ()=>{
+    // Open Anghami in a new tab (works reliably on phones)
+    window.open(ANGhAMI_LINK, "_blank");
+    goToPage2();
+  });
+
+  // ========= PERCENT SELECTOR =========
+  const percentGrid = document.getElementById("percentGrid");
+  const captionBox  = document.getElementById("captionBox");
+  const photoImg    = document.getElementById("photoImg");
+
+  // Captions (pharmacist + sushi + romantic)
+  const captions = {
+    10:  `10%: <b>love you one person.</b> (بس لسه جرعة البداية 😌)`,
+    20:  `20%: Pharmacist queen 💊… you already cured my bad days.`,
+    30:  `30%: If love was a prescription, you’d be “take forever, once daily.”`,
+    40:  `40%: I’m not asking for perfect… I’m asking for <b>you</b>.`,
+    50:  `50%: Half way… and I’m smiling like it’s our first day again.`,
+    60:  `60%: Next step: <b>sushi date</b> 🍣 + your favorite sad songs 🎶.`,
+    70:  `70%: You’re not just my Valentine… you’re my safe place.`,
+    80:  `80%: Fofy, you’re the “good news” I want every year.`,
+    90:  `90%: Almost yes… say it and I’ll plan the whole day like a movie 💖.`,
+    100: `100%: <b>Deal.</b> Valentine confirmed ✅<br/>Now press “Message me” and let’s pick the sushi place 🍣❤️`
+  };
+
+  // You asked: photo for 10%. We’ll show photo10.jpg for all by default.
+  // Later, if you upload more photos (photo20.jpg, photo30.jpg...), this code will auto use them.
+  function photoFor(p){
+    // if you upload photos named photo20.jpg etc, it will try them
+    return `photo${p}.jpg`;
+  }
+
+  function setSelected(btn){
+    document.querySelectorAll(".pctBtn").forEach(b=>b.classList.remove("selected"));
+    btn.classList.add("selected");
+  }
+
+  function onPercentClick(p, btn){
+    setSelected(btn);
+    captionBox.innerHTML = captions[p] || `Chosen: ${p}% ❤️`;
+
+    // Try to load photo{p}.jpg; if not found, fallback to photo10.jpg
+    const trySrc = photoFor(p);
+    const fallback = "photo10.jpg";
+    const img = new Image();
+    img.onload = ()=> { photoImg.src = trySrc; };
+    img.onerror = ()=> { photoImg.src = fallback; };
+    img.src = trySrc;
+
+    // little heart burst
+    for(let i=0;i<4;i++) setTimeout(spawnHeart, i*120);
+  }
+
+  // Build buttons 10..100
+  for(let p=10; p<=100; p+=10){
+    const b = document.createElement("button");
+    b.className = "pctBtn";
+    b.textContent = p + "%";
+    b.addEventListener("click", ()=> onPercentClick(p, b));
+    percentGrid.appendChild(b);
+  }
+
+  // ========= ACTION BUTTONS =========
+  document.getElementById("openAnghamiBtn").addEventListener("click", ()=>{
+    window.open(ANGhAMI_LINK, "_blank");
+  });
+
+  document.getElementById("whatsBtn").addEventListener("click", ()=>{
+    window.location.href = `https://wa.me/${WHATSAPP_NUMBER}`;
+  });
 </script>
 
 </body>
